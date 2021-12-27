@@ -1,6 +1,4 @@
-import { Reduction } from "./Reduction";
-
 export interface IBaseStore<TState> {
   get state(): TState;
-  transit(r: Reduction<TState>): void;
+  transit<T extends any[]>(reduction: (p: TState, ...a: T) => TState, ...args: T): void;
 }

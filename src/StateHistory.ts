@@ -1,6 +1,5 @@
 import { IBaseStore } from "./IBaseStore";
 import { MainStore } from "./MainStore";
-import { Reduction } from "./Reduction";
 
 export class StateHistory<TState> implements IBaseStore<TState> {
   public history: TState[] = [];
@@ -15,8 +14,8 @@ export class StateHistory<TState> implements IBaseStore<TState> {
     this.transit(function manualTransit(): TState { return state; });
   }
 
-  public transit(r: Reduction<TState>): void {
-    this.store.transit(r);
+  public transit<T extends any[]>(reduction: (p: TState, ...a: T) => TState, ...args: T): void {
+    this.store.transit(reduction, ...args);
     this.history.push(this.state);
   }
 

@@ -1,5 +1,4 @@
 import { IBaseStore, IStore, Store } from "../src";
-import { Reduction } from "../src/Reduction";
 import { State } from "../src/State";
 
 class RootStore extends Store<RootState> implements IStore<RootState> {
@@ -7,10 +6,13 @@ class RootStore extends Store<RootState> implements IStore<RootState> {
   constructor(store: IBaseStore<RootState>) {
     super(store);
     const self = this;
-    this.f1 = new ChildStore({
+    const f1SubStore = {
       get state(): ChildState { return self.state.f1; },
-      transit(reduction: Reduction<ChildState>): void { self.transit(state => ({ ...state, f1: reduction(state.f1) })); }
-    });
+      transit<T extends any[]>(reduction: (p: ChildState, ...a: T) => ChildState, ...args: T): void {
+        self.transit(state => ({ ...state, f1: reduction(state.f1, ...args) }));
+      }
+    };
+    this.f1 = new ChildStore(f1SubStore);
   }
 }
 

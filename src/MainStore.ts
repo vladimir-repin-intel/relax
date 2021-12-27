@@ -1,4 +1,3 @@
-import { Reduction } from "./Reduction";
 import { IBaseStore } from "./IBaseStore";
 
 export class MainStore<TState> implements IBaseStore<TState> {
@@ -11,7 +10,7 @@ export class MainStore<TState> implements IBaseStore<TState> {
     this.onStateChange?.(this.state);
   }
 
-  public transit(reduction: Reduction<TState>): void {
-    this.state = reduction(this._state);
+  public transit<T extends any[]>(reduction: (p: TState, ...a: T) => TState, ...args: T): void {
+    this.state = reduction(this._state, ...args);
   }
 }
